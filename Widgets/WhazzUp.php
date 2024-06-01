@@ -41,7 +41,6 @@ class WhazzUp extends Widget
         } else {
             $user_field = 'userId';
             $server_address = 'https://api.ivao.aero/v2/tracker/whazzup';
-            $ivao_vacode = filled(Theme::getSetting('gen_ivao_icao')) ? 'IVAOVA/'.Theme::getSetting('gen_ivao_icao') : 'DSPHBSC';
         }
 
         $whazzup = DB_WhazzUp::where('network', $network_selection)->orderby('updated_at', 'desc')->first();
@@ -67,7 +66,7 @@ class WhazzUp extends Widget
                     $fp = $flightplan->aircraft_short . ' | ' . $flightplan->departure . ' > ' . $flightplan->arrival;
                 } elseif ($flightplan) {
                     $fp = $flightplan->aircraftId . ' | ' . $flightplan->departureId . ' > ' . $flightplan->arrivalId;
-                    $vasys = str_contains($flightplan->remarks, $ivao_vacode);
+                    $vasys = str_contains($flightplan->remarks, 'IVAOVA/' . $user->airline->icao);
                 } else {
                     $fp = 'No ATC Flight Plan!';
                 }
@@ -81,17 +80,17 @@ class WhazzUp extends Widget
                 }
 
                 $pilots[] = [
-                    'user_id'      => isset($user) ? $user->id : null,
-                    'name'         => isset($user) ? $user->name : null,
+                    'user_id' => isset($user) ? $user->id : null,
+                    'name' => isset($user) ? $user->name : null,
                     'name_private' => isset($user) ? $user->name_private : null,
-                    'network_id'   => ($network_selection === 'VATSIM') ? $online_pilot->cid : $online_pilot->userId,
-                    'callsign'     => $online_pilot->callsign,
-                    'server_name'  => ($network_selection === 'VATSIM') ? $online_pilot->server : $online_pilot->serverId,
-                    'online_time'  => ($network_selection === 'VATSIM') ? Carbon::parse($online_pilot->logon_time)->diffInMinutes() : ceil($online_pilot->time / 60),
-                    'pirep'        => $pirep,
-                    'airline'      => $airline,
-                    'flightplan'   => $fp,
-                    'vasyscheck'   => isset($vasys) ? $vasys : null,
+                    'network_id' => ($network_selection === 'VATSIM') ? $online_pilot->cid : $online_pilot->userId,
+                    'callsign' => $online_pilot->callsign,
+                    'server_name' => ($network_selection === 'VATSIM') ? $online_pilot->server : $online_pilot->serverId,
+                    'online_time' => ($network_selection === 'VATSIM') ? Carbon::parse($online_pilot->logon_time)->diffInMinutes() : ceil($online_pilot->time / 60),
+                    'pirep' => $pirep,
+                    'airline' => $airline,
+                    'flightplan' => $fp,
+                    'vasyscheck' => isset($vasys) ? $vasys : null,
                 ];
             }
         }
@@ -102,11 +101,11 @@ class WhazzUp extends Widget
         $pilots = collect($pilots);
 
         return view('DBasic::widgets.whazzup', [
-            'pilots'  => isset($pilots) ? $pilots : null,
-            'error'   => isset($error) ? $error : null,
+            'pilots' => isset($pilots) ? $pilots : null,
+            'error' => isset($error) ? $error : null,
             'network' => $network_selection,
-            'checks'  => $checks,
-            'dltime'  => isset($dltime) ? $dltime : null,
+            'checks' => $checks,
+            'dltime' => isset($dltime) ? $dltime : null,
         ]);
     }
 
@@ -118,7 +117,8 @@ class WhazzUp extends Widget
 
     public function AirlinesArray()
     {
-        return Airline::where('active', 1)->pluck('icao')->toArray();;
+        return Airline::where('active', 1)->pluck('icao')->toArray();
+        ;
     }
 
     public function NetworkUsersArray($field_name = null)
