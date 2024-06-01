@@ -91,6 +91,7 @@ class WhazzUp extends Widget
                     'airline' => $airline,
                     'flightplan' => $fp,
                     'vasyscheck' => isset($vasys) ? $vasys : null,
+                    'airline_icao' => isset($user) ? $user->airline->icao : null
                 ];
             }
         }

@@ -46,10 +46,10 @@
                                     @if ($network === 'IVAO')
                                         @if ($pilot['vasyscheck'] === true)
                                             <i class="fas fa-file-alt text-success mx-1"
-                                                title="IVAOVA/{{ $pilot['airline']->icao }} code found in FPL"></i>
+                                                title="IVAOVA/{{ $pilot['airline_icao'] }} code found in FPL"></i>
                                         @elseif($pilot['vasyscheck'] === false)
                                             <i class="fas fa-file text-danger mx-1"
-                                                title="IVAOVA/{{ $pilot['airline']->icao }} code NOT found in FPL!"></i>
+                                                title="IVAOVA/{{ $pilot['airline_icao'] }} code NOT found in FPL!"></i>
                                         @endif
                                     @endif
                                 @endif
